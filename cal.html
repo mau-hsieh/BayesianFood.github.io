@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>條件概率計算</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html">回到主頁</a><br>
+    <h1>條件概率計算</h1>
+
+    <h2>先驗概率 (Prior Probabilities)</h2>
+    <table id="priorProbabilities">
+        <tr>
+            <th>觀念</th>
+            <th>p(Hi)</th>
+        </tr>
+        <tr>
+            <td>H1 </td>
+            <td>0.40</td>
+        </tr>
+        <tr>
+            <td>H2 </td>
+            <td>0.35</td>
+        </tr>
+        <tr>
+            <td>H3 </td>
+            <td>0.25</td>
+        </tr>
+    </table>
+
+    <h2>條件概率 (Conditional Probabilities)</h2>
+    <table id="conditionalProbabilities">
+    </table>
+
+    <h2>計算結果</h2>
+    <div id="result"></div>
+    <label for="calculateE1">計算 E1</label>
+    <input type="checkbox" id="calculateE1" >
+    <label for="calculateE2">計算 E2</label>
+    <input type="checkbox" id="calculateE2" >
+    <label for="calculateE3">計算 E3</label>
+    <input type="checkbox" id="calculateE3" >
+
+    <label for="calculateE4">計算 E4</label>
+    <input type="checkbox" id="calculateE4" >
+<br>
+    <img src="images/01.png" width="500" height="300"><br>
+    
+    <br>
+    
+    <img src="images/02.png" width="500" height="300"><br>
+    <br>
+    
+    <img src="images/03.png" width="500" ><br>
+
+    <script>
+        // 先驗概率
+        const prior_probabilities_H = [0.40, 0.35, 0.25];
+
+        // 條件概率
+        const conditional_probabilities_E_H = [
+            [0.3, 0.8, 0.5], // P(E1|H1), P(E1|H2), P(E1|H3)
+            [0.9, 0.0, 0.7], // P(E2|H1), P(E2|H2), P(E2|H3)
+            [0.6, 0.7, 0.9], // P(E3|H1), P(E3|H2), P(E3|H3)
+            [0.9, 0.5, 0.5] // 更改這裡
+        ];
+        function renderConditionalProbabilities() {
+            const table = document.getElementById('conditionalProbabilities');
+            let html = `
+                <tr>
+                    <th></th>
+                    <th>H1</th>
+                    <th>H2</th>
+                    <th>H3</th>
+                </tr>
+            `;
+            conditional_probabilities_E_H.forEach((probabilities, index) => {
+                html += `<tr><td>p(E${index+1}|Hi)</td>`;
+                probabilities.forEach(prob => {
+                    html += `<td>${prob}</td>`;
+                });
+                html += `</tr>`;
+            });
+            table.innerHTML = html;
+        }
+
+        function calculatePosteriorProbabilities() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = ''; // 清空先前的結果
+            const results = [];
+            const sumResults = [];
+
+            // 检查每个Ei是否被选中
+            const checkboxStatus = [1, 2, 3, 4].map(i => document.getElementById(`calculateE${i}`).checked);
+
+            // 计算每个假设的结果
+            prior_probabilities_H.forEach((prior, index) => {
+                let result = prior;
+                conditional_probabilities_E_H.forEach((probabilities, eIndex) => {
+                    if (checkboxStatus[eIndex]) {
+                        result *= probabilities[index];
+                    }
+                });
+                results.push(result);
+            });
+
+            // 计算结果的总和
+            const sum = results.reduce((acc, value) => acc + value, 0);
+
+            // 输出每个假设的结果
+            results.forEach((result, index) => {
+                resultDiv.innerHTML += `<p>p(E|H${index+1})*p(H${index+1}) = ${result.toFixed(2)}</p>`;
+            });
+
+            // 计算并显示后验概率
+            results.forEach((result, index) => {
+                resultDiv.innerHTML += `<p>p(H${index+1}|E) = ${(result / sum).toFixed(3)}</p>`;
+            });
+        }
+        renderConditionalProbabilities() 
+        // 初始计算
+        calculatePosteriorProbabilities();
+
+        // 监听复选框变化，重新计算
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', calculatePosteriorProbabilities);
+        });
+    </script>
+</body>
+</html>

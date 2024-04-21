@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrated Quiz and Probability Calculations</title>
+<style>
+    .container {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .question, .probability-table {
+        margin-bottom: 20px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+    <a href="index.html">回到主頁</a><br>
+<div class="container" id="quiz-container">
+    <h1>均衡飲食觀念測驗(由 ChatGpt 生成題目)</h1>
+    <form id="quizForm">
+        <!-- Questions will be inserted here by JavaScript -->
+    </form>
+    <button type="button" onclick="quiz.submitQuiz()">提交答案</button>
+    <div id="quizResult"></div>
+</div>
+
+<div class="container" id="probabilities-container">
+    <h1>條件機率計算(由 Chatgpt 估算)</h1>
+    <table id="priorProbabilities">
+        <tr>
+            <th>觀念</th>
+            <th>p(Hi)</th>
+        </tr>
+        <tr>
+            <td>食品類別錯誤</td>
+            <td>0.2</td>
+        </tr>
+        <tr>
+            <td>營養素平衡的誤解</td>
+            <td>0.4</td>
+        </tr>
+        <tr>
+            <td>對營養素作用的誤解</td>
+            <td>0.4</td>
+        </tr>
+    </table>
+    
+    <table id="conditionalProbabilities"></table>
+
+    <h2>計算結果</h2>
+    <h3>您答錯的題目</h3>
+    <label for="calculateE1">計算 E1</label>
+    <input type="checkbox" id="calculateE1" >
+    <label for="calculateE2">計算 E2</label>
+    <input type="checkbox" id="calculateE2" >
+    <label for="calculateE3">計算 E3</label>
+    <input type="checkbox" id="calculateE3" >
+
+    <label for="calculateE4">計算 E4</label>
+    <input type="checkbox" id="calculateE4" >
+
+
+    <label for="calculateE4">計算 E5</label>
+    <input type="checkbox" id="calculateE5" >
+    <label for="calculateE4">計算 E6</label>
+    <input type="checkbox" id="calculateE6" >
+    <label for="calculateE4">計算 E7</label>
+    <input type="checkbox" id="calculateE7" >
+    <label for="calculateE4">計算 E8</label>
+    <input type="checkbox" id="calculateE8" >
+    <label for="calculateE4">計算 E9</label>
+    <input type="checkbox" id="calculateE9" >
+    <label for="calculateE4">計算 E10</label>
+    <input type="checkbox" id="calculateE10" >
+    <div id="result"></div>
+    <!--
+        <div id="result">123</div>
+-->
+
+    <!-- More interactive elements for probability calculations -->
+</div>
+
+<script>
+    (function quiz() {
+        const questions = [
+    {
+        question: "均衡飲食中應該包括哪些食物類別？",
+        answers: [
+            "A. 僅水果和蔬菜",
+            "B. 僅肉類和奶製品",
+            "C. 水果、蔬菜、全穀類和蛋白質來源",
+            "D. 僅全穀類和蛋白質來源"
+        ],
+        correct: "C",
+        name: "q1"
+    },
+    {
+        question: "哪種肉類選擇是推薦給老年人的健康選擇？",
+        answers: [
+            "A. 處理過的肉類，如熱狗和香腸",
+            "B. 高脂肪的紅肉，如肋眼",
+            "C. 精瘦肉，如雞胸肉",
+            "D. 都不是"
+        ],
+        correct: "C",
+        name: "q2"
+    },
+    {
+        question: "哪些食物是對心臟健康有益的？",
+        answers: [
+            "A. 高鈉食物",
+            "B. 富含全穀物的食物",
+            "C. 高糖飲料",
+            "D. 深油炸食物"
+        ],
+        correct: "B",
+        name: "q3"
+    },
+    {
+        question: "過量攝取哪種營養素會增加高血壓的風險？",
+        answers: [
+            "A. 維生素C",
+            "B. 維生素E",
+            "C. 鈉",
+            "D. 鉀"
+        ],
+        correct: "C",
+        name: "q4"
+    },
+    {
+        question: "哪些食物應該在飲食中限制以幫助防止2型糖尿病？",
+        answers: [
+            "A. 全穀類",
+            "B. 鮮果汁",
+            "C. 豆類",
+            "D. 瘦肉"
+        ],
+        correct: "B",
+        name: "q5"
+    },
+    {
+        question: "老年人應該限制哪種類型的脂肪攝入？",
+        answers: [
+            "A. 飽和脂肪和反式脂肪",
+            "B. 單不飽和脂肪",
+            "C. 多不飽和脂肪",
+            "D. 魚油"
+        ],
+        correct: "A",
+        name: "q6"
+    },
+    {
+        question: "哪種烹飪方法最適合保存蔬菜中的營養？",
+        answers: [
+            "A. 油炸",
+            "B. 長時間煮沸",
+            "C. 快速蒸煮",
+            "D. 微波烹煮"
+        ],
+        correct: "C",
+        name: "q7"
+    },
+    {
+        question: "選擇以下哪個選項是維生素D的來源？",
+        answers: [
+            "A. 日曬",
+            "B. 所有種類的肉類",
+            "C. 糖類",
+            "D. 酒精"
+        ],
+        correct: "A",
+        name: "q8"
+    },
+    {
+        question: "在飲食中，哪類脂肪是有益健康的？",
+        answers: [
+            "A. 飽和脂肪",
+            "B. 反式脂肪",
+            "C. 單不飽和脂肪和多不飽和脂肪",
+            "D. 人造脂肪"
+        ],
+        correct: "C",
+        name: "q9"
+    },
+    {
+        question: "哪種食物是鉀的良好來源，並有助於控制血壓？",
+        answers: [
+            "A. 加工肉類",
+            "B. 甜點",
+            "C. 鹹食零食",
+            "D. 香蕉"
+        ],
+        correct: "D",
+        name: "q10"
+    }
+];
+
+        function loadQuestions() {
+            const form = document.getElementById('quizForm');
+            questions.forEach((question, index) => {
+                const qElement = document.createElement('div');
+                qElement.className = 'question';
+                qElement.innerHTML = `<p>${index + 1}. ${question.question}</p>` +
+                    question.answers.map(answer => `<div><input type="radio" id="${question.name}${answer[0]}" name="${question.name}" value="${answer[0]}"><label for="${question.name}${answer[0]}">${answer}</label></div>`).join('');
+                form.appendChild(qElement);
+            });
+        }
+    
+        function submitQuiz() {
+        const results = questions.map((question, index) => {
+        const selected = document.querySelector(`input[name="${question.name}"]:checked`);
+        const response = selected ? selected.value : "No answer";
+        const correctAnswer = question.correct;
+        const resultText = `Question ${index + 1}: Your answer: ${response} `;
+        const correctText = `Correct answer: ${correctAnswer}`;
+        // Automatically check or uncheck E1 to E10 based on whether the answer is correct
+        const checkboxId = `calculateE${index + 1}`;
+        const checkbox = document.getElementById(checkboxId);
+        if (response !== correctAnswer) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+        return resultText + (response === correctAnswer ? `<span style="color:green;">${correctText}</span>` : `<span style="color:red;">${correctText}</span>`);
+    }).join('<br>');
+    document.getElementById('quizResult').innerHTML = results;
+    probabilities.calculatePosteriorProbabilities();  // Recalculate probabilities after quiz submission
+}
+
+    
+        window.addEventListener('load', loadQuestions);
+        window.quiz = { submitQuiz };
+    })();
+    
+    (function probabilities() {
+        // Variables for probabilities
+        const prior_probabilities_H = [0.2, 0.4, 0.4];
+        const conditional_probabilities_E_H = [
+            [0.70, 0.60, 0.50], // P(答錯第一題 | 錯誤理解)
+            [0.50, 0.40, 0.30], // P(答錯第二題 | 錯誤理解)
+            [0.60, 0.50, 0.40], // P(答錯第三題 | 錯誤理解)
+            [0.40, 0.55, 0.65], // P(答錯第四題 | 錯誤理解)
+            [0.45, 0.35, 0.25], // P(答錯第五題 | 錯誤理解)
+            [0.35, 0.45, 0.55], // P(答錯第六題 | 錯誤理解)
+            [0.30, 0.50, 0.40], // P(答錯第七題 | 錯誤理解)
+            [0.25, 0.35, 0.45], // P(答錯第八題 | 錯誤理解)
+            [0.55, 0.65, 0.75], // P(答錯第九題 | 錯誤理解)
+            [0.50, 0.40, 0.30]  // P(答錯第十題 | 錯誤理解)
+        ];
+    
+        function renderConditionalProbabilities() {
+            const table = document.getElementById('conditionalProbabilities');
+            let html = `
+                <tr>
+                    <th></th>
+                    <th>食品類別錯誤</th>
+                    <th>營養素平衡的誤解</th>
+                    <th>對營養素作用的誤解</th>
+                </tr>
+            `;
+            conditional_probabilities_E_H.forEach((probabilities, index) => {
+                html += `<tr><td>p(E${index+1}|Hi)</td>`;
+                probabilities.forEach(prob => {
+                    html += `<td>${prob}</td>`;
+                });
+                html += `</tr>`;
+            });
+            table.innerHTML = html;
+        }
+    
+        function calculatePosteriorProbabilities() {
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '';
+    const results = [];
+    const hypothesis = ["食品類別錯誤","營養素平衡的誤解","對營養素作用的誤解"];
+    const checkboxStatus = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => document.getElementById(`calculateE${i}`).checked);
+    prior_probabilities_H.forEach((prior, index) => {
+        let result = prior;
+        conditional_probabilities_E_H.forEach((probabilities, eIndex) => {
+            if (checkboxStatus[eIndex]) {
+                result *= probabilities[index];
+            }
+        });
+        results.push(result);
+    });
+    const sum = results.reduce((acc, value) => acc + value, 0);
+    const posteriorProbabilities = results.map((result, index) => {
+        const posterior = result / sum;
+        resultDiv.innerHTML += `<p>p(Ei|H${index + 1})*p(H${index + 1}) = ${result.toFixed(10)}</p>`;
+        return posterior;
+    });
+
+    // Find the maximum posterior probability and its index
+    const maxIndex = posteriorProbabilities.indexOf(Math.max(...posteriorProbabilities));
+    const maxProbability = posteriorProbabilities[maxIndex].toFixed(3);
+
+    // Display each posterior probability
+    posteriorProbabilities.forEach((probability, index) => {
+        resultDiv.innerHTML += `<p>p(H${index + 1}|Ei) = ${probability.toFixed(3)}</p>`;
+    });
+
+    // Highlight the hypothesis with the highest posterior probability
+    resultDiv.innerHTML += `<p><strong>最高的機率為 p(H${maxIndex + 1}|E) = ${maxProbability}, 最有可能的是 H${maxIndex + 1} ${hypothesis[maxIndex]}.</strong></p>`;
+}
+
+        renderConditionalProbabilities();
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', calculatePosteriorProbabilities);
+        });
+        window.probabilities = { calculatePosteriorProbabilities };
+    })();
+    </script>
+    </body>
+    </html>
+    
+</body>
+</html>

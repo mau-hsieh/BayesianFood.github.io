@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrated Quiz and Probability Calculations</title>
+<style>
+    .container {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .question, .probability-table {
+        margin-bottom: 20px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+    <a href="index.html">回到主頁</a><br>
+<div class="container" id="quiz-container">
+    <h1>均衡飲食觀念測驗(由專家提供的題目)</h1>
+    <form id="quizForm">
+        <!-- Questions will be inserted here by JavaScript -->
+    </form>
+    <button type="button" onclick="quiz.submitQuiz()">提交答案</button>
+    <div id="quizResult"></div>
+</div>
+
+<div class="container" id="probabilities-container">
+    <h1>條件機率計算(由 Chatgpt 估算)</h1>
+    <table id="priorProbabilities">
+        <tr>
+            <th>觀念</th>
+            <th>p(Hi)</th>
+        </tr>
+        <tr>
+            <td>均衡飲食觀念錯誤</td>
+            <td>0.4</td>
+        </tr>
+        <tr>
+            <td>食物與營養素含量的誤解</td>
+            <td>0.3</td>
+        </tr>
+        <tr>
+            <td>對營養與疾病的誤解</td>
+            <td>0.3</td>
+        </tr>
+    </table>
+    
+    <table id="conditionalProbabilities"></table>
+
+    <h2>計算結果</h2>
+    <h3>您答錯的題目</h3>
+    <label for="calculateE1">計算 E1</label>
+    <input type="checkbox" id="calculateE1" >
+    <label for="calculateE2">計算 E2</label>
+    <input type="checkbox" id="calculateE2" >
+    <label for="calculateE3">計算 E3</label>
+    <input type="checkbox" id="calculateE3" >
+
+    <label for="calculateE4">計算 E4</label>
+    <input type="checkbox" id="calculateE4" >
+
+
+    <label for="calculateE4">計算 E5</label>
+    <input type="checkbox" id="calculateE5" >
+    <label for="calculateE4">計算 E6</label>
+    <input type="checkbox" id="calculateE6" >
+    <label for="calculateE4">計算 E7</label>
+    <input type="checkbox" id="calculateE7" >
+    <label for="calculateE4">計算 E8</label>
+    <input type="checkbox" id="calculateE8" >
+    <label for="calculateE4">計算 E9</label>
+    <input type="checkbox" id="calculateE9" >
+    <label for="calculateE4">計算 E10</label>
+    <input type="checkbox" id="calculateE10" >
+    <div id="result"></div>
+    <!--
+        <div id="result">123</div>
+-->
+
+    <!-- More interactive elements for probability calculations -->
+</div>
+
+<script>
+    (function quiz() {
+        const questions = [
+    {
+        question: "下列哪一道餐點組合，較符合健康均衡飲食原則？",
+        answers: [
+            "1 稀飯+豆腐乳+醬瓜",
+            "2 乾麵+蛋花湯",
+            "3 糙米飯+清蒸魚+炒青菜"
+        ],
+        correct: "3",
+        name: "q1"
+    },
+    {
+        question: "每餐建議攝取 1 個拳頭大小的水果，您認為在一餐中，蔬菜和水果的比例，怎麼吃比較健康？",
+        answers: [
+            "1 一樣多",
+            "2 蔬菜比水果多",
+            "3 水果比蔬菜多"
+        ],
+        correct: "2",
+        name: "q2"
+    },
+    {
+        question: "您認為在一餐中，豆魚蛋肉類食物要吃多少個「手掌心（不含手指頭）」大小的份量，會比較健康？",
+        answers: [
+            "1. 半個",
+            "2. 一個",
+            "3. 兩個"
+        ],
+        correct: "2",
+        name: "q3"
+    },
+    {
+        question: "全穀雜糧類常稱為「主食類」，可以提供熱量及多項營養素。下列哪一種主食是較佳的選擇？",
+        answers: [
+            "1 白飯",
+            "2 拉麵",
+            "3 紫米飯"
+        ],
+        correct: "3",
+        name: "q4"
+    },
+    {
+        question: "攝取足夠膳食纖維對於排便很重要。下列哪一類食物含有較豐富的膳食纖維，可以促進排便？",
+        answers: [
+            "1 蛋類",
+            "2 海鮮類",
+            "3 未精製全穀雜糧類"
+        ],
+        correct: "3",
+        name: "q5"
+    },
+    {
+        question: "隨著年齡增加，身體肌肉可能逐漸流失。建議每餐都充足攝取下列哪一類食物，對於減少肌肉的流失現象，能有幫助？",
+        answers: [
+            "1 豆魚蛋肉類",
+            "2 油脂類",
+            "3 蔬菜類"
+        ],
+        correct: "1",
+        name: "q6"
+    },
+    {
+        question: "油脂是提供人體所需熱量的重要來源之一。下列哪一種油，對心血管健康而言是較佳的選擇？",
+        answers: [
+            "1 豬油",
+            "2 沙拉油",
+            "3 椰子油"
+        ],
+        correct: "2",
+        name: "q7"
+    },
+    {
+        question: "碘是維持身體正常代謝的必需營養素。請問如何挑選食鹽，較能避免碘攝取不足的問題？",
+        answers: [
+            "1 選擇進口鹽",
+            "2 選擇包裝上標示「天然」字樣的食鹽，如：天然海鹽",
+            "3 選擇包裝上標示「添加碘」字樣的食鹽"
+        ],
+        correct: "3",
+        name: "q8"
+    },
+    {
+        question: "在高血壓控制方面，飲食除了需要注意「鹽」的用量之外，下列哪一種調味品也應適量使用？",
+        answers: [
+            "1 五香",
+            "2 醬油",
+            "3 白醋"
+        ],
+        correct: "2",
+        name: "q9"
+    },
+    {
+        question: "對於牙口咀嚼功能較差的人，可以藉由改變食物質地（軟硬度）來改善進食問題。下列哪一種新鮮食材，可以與肉類一起醃漬，以達到較佳的軟化肉質效果，變得更容易食用？",
+        answers: [
+            "1 鳳梨",
+            "2 芒果",
+            "3 荔枝"
+        ],
+        correct: "1",
+        name: "q10"
+    }
+];
+
+
+        function loadQuestions() {
+            const form = document.getElementById('quizForm');
+            questions.forEach((question, index) => {
+                const qElement = document.createElement('div');
+                qElement.className = 'question';
+                qElement.innerHTML = `<p>${index + 1}. ${question.question}</p>` +
+                    question.answers.map(answer => `<div><input type="radio" id="${question.name}${answer[0]}" name="${question.name}" value="${answer[0]}"><label for="${question.name}${answer[0]}">${answer}</label></div>`).join('');
+                form.appendChild(qElement);
+            });
+        }
+    
+        function submitQuiz() {
+        const results = questions.map((question, index) => {
+        const selected = document.querySelector(`input[name="${question.name}"]:checked`);
+        const response = selected ? selected.value : "No answer";
+        const correctAnswer = question.correct;
+        const resultText = `Question ${index + 1}: Your answer: ${response} `;
+        const correctText = `Correct answer: ${correctAnswer}`;
+        // Automatically check or uncheck E1 to E10 based on whether the answer is correct
+        const checkboxId = `calculateE${index + 1}`;
+        const checkbox = document.getElementById(checkboxId);
+        if (response !== correctAnswer) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+        return resultText + (response === correctAnswer ? `<span style="color:green;">${correctText}</span>` : `<span style="color:red;">${correctText}</span>`);
+    }).join('<br>');
+    document.getElementById('quizResult').innerHTML = results;
+    probabilities.calculatePosteriorProbabilities();  // Recalculate probabilities after quiz submission
+}
+
+    
+        window.addEventListener('load', loadQuestions);
+        window.quiz = { submitQuiz };
+    })();
+    
+    (function probabilities() {
+        // Variables for probabilities
+        const prior_probabilities_H = [0.4, 0.3, 0.3];
+        const conditional_probabilities_E_H = [
+        [0.70, 0.20, 0.10], // P(答錯第一題 | 錯誤理解)
+    [0.70, 0.20, 0.10], // P(答錯第二題 | 錯誤理解)
+    [0.70, 0.20, 0.10], // P(答錯第三題 | 錯誤理解)
+    [0.10, 0.80, 0.10], // P(答錯第四題 | 錯誤理解)
+    [0.10, 0.80, 0.10], // P(答錯第五題 | 錯誤理解)
+    [0.10, 0.20, 0.70], // P(答錯第六題 | 錯誤理解)
+    [0.10, 0.80, 0.10], // P(答錯第七題 | 錯誤理解)
+    [0.10, 0.80, 0.10], // P(答錯第八題 | 錯誤理解)
+    [0.10, 0.20, 0.70], // P(答錯第九題 | 錯誤理解)
+    [0.10, 0.20, 0.70]  // P(答錯第十題 | 錯誤理解)
+        ];
+    
+        function renderConditionalProbabilities() {
+            const table = document.getElementById('conditionalProbabilities');
+            let html = `
+                <tr>
+                    <th></th>
+                    <th>均衡飲食的誤解</th>
+                    <th>食物與營養素含量的誤解</th>
+                    <th>對營養與疾病關聯的誤解</th>
+                </tr>
+            `;
+            conditional_probabilities_E_H.forEach((probabilities, index) => {
+                html += `<tr><td>p(E${index+1}|Hi)</td>`;
+                probabilities.forEach(prob => {
+                    html += `<td>${prob}</td>`;
+                });
+                html += `</tr>`;
+            });
+            table.innerHTML = html;
+        }
+    
+        function calculatePosteriorProbabilities() {
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '';
+    const results = [];
+    const hypothesis = ["均衡飲食的誤解","食物與營養素含量的誤解","對營養與疾病關聯的誤解"];
+    const checkboxStatus = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => document.getElementById(`calculateE${i}`).checked);
+    prior_probabilities_H.forEach((prior, index) => {
+        let result = prior;
+        conditional_probabilities_E_H.forEach((probabilities, eIndex) => {
+            if (checkboxStatus[eIndex]) {
+                result *= probabilities[index];
+            }
+        });
+        results.push(result);
+    });
+    const sum = results.reduce((acc, value) => acc + value, 0);
+    const posteriorProbabilities = results.map((result, index) => {
+        const posterior = result / sum;
+        resultDiv.innerHTML += `<p>p(Ei|H${index + 1})*p(H${index + 1}) = ${result.toFixed(10)}</p>`;
+        return posterior;
+    });
+
+    // Find the maximum posterior probability and its index
+    const maxIndex = posteriorProbabilities.indexOf(Math.max(...posteriorProbabilities));
+    const maxProbability = posteriorProbabilities[maxIndex].toFixed(3);
+
+    // Display each posterior probability
+    posteriorProbabilities.forEach((probability, index) => {
+        resultDiv.innerHTML += `<p>p(H${index + 1}|Ei) = ${probability.toFixed(3)}</p>`;
+    });
+
+    // Highlight the hypothesis with the highest posterior probability
+    resultDiv.innerHTML += `<p><strong>最高的機率為 p(H${maxIndex + 1}|E) = ${maxProbability}, 最有可能的是 H${maxIndex + 1} ${hypothesis[maxIndex]}.</strong></p>`;
+}
+
+        renderConditionalProbabilities();
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', calculatePosteriorProbabilities);
+        });
+        window.probabilities = { calculatePosteriorProbabilities };
+    })();
+    </script>
+    </body>
+    </html>
+    
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>動態數字更新示例</title>
+<style>
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<h1>3x3 數字更新</h1>
+
+<div>
+  <h2>輸入數字</h2>
+  <table id="inputTable">
+    <tr>
+      <td><input type="number" id="cell0"></td>
+      <td><input type="number" id="cell1"></td>
+      <td><input type="number" id="cell2"></td>
+    </tr>
+    <tr>
+      <td><input type="number" id="cell3"></td>
+      <td><input type="number" id="cell4"></td>
+      <td><input type="number" id="cell5"></td>
+    </tr>
+    <tr>
+      <td><input type="number" id="cell6"></td>
+      <td><input type="number" id="cell7"></td>
+      <td><input type="number" id="cell8"></td>
+    </tr>
+  </table>
+  <button onclick="updateNumbers()">更新</button>
+</div>
+
+<div>
+  <h2>更新後的數字</h2>
+  <table id="outputTable">
+    <tr>
+      <td id="out0"></td>
+      <td id="out1"></td>
+      <td id="out2"></td>
+    </tr>
+    <tr>
+      <td id="out3"></td>
+      <td id="out4"></td>
+      <td id="out5"></td>
+    </tr>
+    <tr>
+      <td id="out6"></td>
+      <td id="out7"></td>
+      <td id="out8"></td>
+    </tr>
+  </table>
+</div>
+
+<div>
+  <h2>設定新的預設數字 (請輸入9個數字，用逗號分隔)</h2>
+  <input type="text" id="newDefaults" placeholder="例如: 1,2,3,4,5,6,7,8,9">
+  <button onclick="setNewDefaults()">設定預設數字</button>
+</div>
+
+<script>
+var defaultNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+function initializeInputs() {
+  defaultNumbers.forEach((number, index) => {
+    const input = document.getElementById(`cell${index}`);
+    input.value = number;
+  });
+}
+
+function updateNumbers() {
+  for (let i = 0; i < 9; i++) {
+    const input = document.getElementById(`cell${i}`).value;
+    const outputCell = document.getElementById(`out${i}`);
+    outputCell.textContent = input;
+  }
+}
+
+function setNewDefaults() {
+  const newDefaultsInput = document.getElementById('newDefaults').value;
+  defaultNumbers = newDefaultsInput.split(',').map(Number);
+  initializeInputs();
+}
+
+document.addEventListener('DOMContentLoaded', initializeInputs);
+</script>
+</body>
+</html>

@@ -52,7 +52,7 @@
     </div>
 
     <div class="container" id="probabilities-container">
-        <h1>條件機率計算(請營養師自己填入機率)</h1>
+        <h1>條件機率計算(請營養師填入機率)</h1>
         <table id="priorProbabilities">
             <tr>
                 <th>觀念</th>
@@ -331,7 +331,7 @@
                 });
 
                 // Highlight the hypothesis with the highest posterior probability
-                resultDiv.innerHTML += `<p>根據您做錯的題目使用貝氏機率計算, <strong>最高的機率為 p(H${maxIndex + 1}|E) = ${maxProbability}, 代表您最有可能 H${maxIndex + 1} ${hypothesis[maxIndex]}.</strong></p>`;
+                resultDiv.innerHTML += `<p>根據您做錯的題目使用貝氏機率計算, <strong>最高的機率為 p(H${maxIndex + 1}|Ei) = ${maxProbability}, 代表您最有可能 H${maxIndex + 1} ${hypothesis[maxIndex]}.</strong></p>`;
             }
 
             renderConditionalProbabilities();
